@@ -36,6 +36,15 @@ webSocketServer.on("connection", function (socket) {
     console.log("movement from esp32:", data);
     socket.send(data);
   });
+  socket.onmessage(function (message) {
+    if (message.data == "stop") {
+      port.write("stop", function (err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
+  });
 });
 
 app.get("/", (req, res) => {
