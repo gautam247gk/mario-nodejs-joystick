@@ -19,7 +19,6 @@
   "homepage": "https://github.com/reruns/mario#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "serialport": "^9.2.1",
-    "socket.io": "^4.2.0"
+    "serialport": "^9.2.1"
   }
 }
