@@ -1,24 +1,14 @@
 {
   "name": "mario",
   "version": "1.0.0",
-  "description": "[![Mario](http://www.garrettjohnson.net/images/fulls/mariofull.png)](http://www.garrettjohnson.net/mario) #Mario [Mario.js](www.garrettjohnson.net/mario \"Mario.js\") is a clone of Super Mario Bros. for the Nintendo Entertainment System, implemented in Javascript.  It implements a hand-built game engine using the HTML5 Canvas.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js "
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/reruns/mario.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/reruns/mario/issues"
-  },
-  "homepage": "https://github.com/reruns/mario#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "serialport": "^9.2.1"
+    "serialport": "^9.2.1",
+    "ws": "^8.2.2"
   }
 }
