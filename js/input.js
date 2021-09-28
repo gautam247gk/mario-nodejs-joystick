@@ -1,8 +1,10 @@
 (function () {
   var pressedKeys = {};
-
+  var host = window.document.location.host.replace(/:.*/, "");
+  var ws = new WebSocket("ws://" + host + ":3000");
   function setKey(event, status) {
     var code = event.keyCode;
+    console.log(event);
     var key;
 
     switch (code) {
@@ -36,6 +38,7 @@
 
   document.addEventListener("keydown", function (e) {
     setKey(e, true);
+    // console.log(e);
   });
 
   document.addEventListener("keyup", function (e) {
@@ -45,7 +48,54 @@
   window.addEventListener("blur", function () {
     pressedKeys = {};
   });
+  /////////////////socket receive////////////////////////////
+  ws.onmessage = function (message) {
+    //console.log("data received from server:", message);
+    var j;
+    ///move right
 
+    if (message.data == "49") {
+      j = new KeyboardEvent("keydown", {
+        code: "ArrowRight",
+        keyCode: "39",
+      });
+      setKey(j, true);
+    } else if (message.data != "49") {
+      j = new KeyboardEvent("keyup", {
+        code: "ArrowRight",
+        keyCode: "39",
+      });
+      setKey(j, false);
+    }
+    ///move left
+    if (message.data == "48") {
+      j = new KeyboardEvent("keydown", {
+        code: "ArrowLeft",
+        keyCode: "37",
+      });
+      setKey(j, true);
+    } else if (message.data != "48") {
+      j = new KeyboardEvent("keyup", {
+        code: "ArrowLeft",
+        keyCode: "37",
+      });
+      setKey(j, false);
+    }
+    ///JUMMP
+    if (message.data == "50") {
+      j = new KeyboardEvent("keydown", {
+        code: "Arrowup",
+        keyCode: "32",
+      });
+      setKey(j, true);
+    } else if (message.data != "50") {
+      j = new KeyboardEvent("keyup", {
+        code: "Arrowup",
+        keyCode: "32",
+      });
+      setKey(j, false);
+    }
+  };
   window.input = {
     isDown: function (key) {
       return pressedKeys[key.toUpperCase()];

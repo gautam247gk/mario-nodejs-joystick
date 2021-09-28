@@ -5,14 +5,33 @@ var http = require("http").Server(app);
 var WebSocketServer = require("ws").Server;
 var webSocketServer;
 const PORT = 3000;
-var portid = require("./portid");
+const Readline = require("@serialport/parser-readline");
 const SerialPort = require("serialport");
-const port = new SerialPort(portid.port, {
-  baudRate: 115200,
-  dataBits: 8,
-  parity: "none",
-  stopBits: 1,
-  flowControl: false,
+var comport;
+var parser;
+var newport;
+SerialPort.list().then(function (ports) {
+  ports.forEach(function (ports) {
+    if (
+      ports.pnpId.includes("VID_10C4&PID_EA60") ||
+      ports.pnpId.includes("VID_1A86&PID_7523")
+    ) {
+      comport = ports.path;
+      console.log("PlayComputer Connected at :", comport);
+      console.log("Visit 'http://localhost:3000' on your browser");
+      newport = new SerialPort(comport, {
+        baudRate: 115200,
+        dataBits: 8,
+        parity: "none",
+        stopBits: 1,
+        flowControl: false,
+      });
+      parser = newport.pipe(new Readline({ delimiter: "\r\n" }));
+    }
+  });
+  if (!newport) {
+    console.log("PlayComputer not connected \nConnect and reopen again");
+  }
 });
 
 server = http.listen(PORT, () => {
@@ -23,28 +42,22 @@ webSocketServer = new WebSocketServer({ server: server });
 
 webSocketServer.on("connection", function (socket) {
   console.log("New client connection");
-  port.write("start", function (err) {
-    console.log("writing start to esp32");
-    if (err) {
-      return console.log("Error on write: ", err.message);
-    }
-  });
-  port.on("data", async function (data) {
+  parser.on("data", async function (data) {
     pressed = true;
     data = await data.toString("utf-8").trim();
-    console.log(typeof data);
-    console.log("movement from esp32:", data);
+    // console.log(typeof data);
+    // console.log("movement from esp32:", data);
     socket.send(data);
   });
-  socket.onmessage(function (message) {
-    if (message.data == "stop") {
-      port.write("stop", function (err) {
-        if (err) {
-          console.log(err);
-        }
-      });
-    }
-  });
+  // socket.onmessage = function (message) {
+  //   if (message.data == "stop") {
+  //     parser.write("stop", function (err) {
+  //       if (err) {
+  //         console.log(err);
+  //       }
+  //     });
+  //   }
+  // };
 });
 
 app.get("/", (req, res) => {

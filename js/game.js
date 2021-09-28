@@ -10,8 +10,7 @@ var requestAnimFrame = (function () {
     }
   );
 })();
-var host = window.document.location.host.replace(/:.*/, "");
-var ws = new WebSocket("ws://" + host + ":3000");
+
 //create the canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
@@ -94,46 +93,11 @@ function main() {
 
 function update(dt) {
   gameTime += dt;
-  /////////////////socket receive////////////////////////////
-  ws.onmessage = function (message) {
-    console.log("data received from server:", message);
-    handleJoyInput(message.data);
-  };
+
   handleInput(dt);
   updateEntities(dt, gameTime);
 
   checkCollisions();
-}
-////////////////////////////joyinput
-function handleJoyInput(message) {
-  if (player.piping || player.dying || player.noInput) return;
-  if (input.isDown("RUN")) {
-    player.run();
-  } else {
-    player.noRun();
-  }
-  if (message == "u") {
-    player.jump();
-  } else {
-    //we need this to handle the timing for how long you hold it
-    player.noJump();
-  }
-
-  if (message == "d") {
-    player.crouch();
-  } else {
-    player.noCrouch();
-  }
-
-  if (message == "l") {
-    // 'd' or left arrow
-    player.moveLeft();
-  } else if (message == "r") {
-    // 'k' or right arrow
-    player.moveRight();
-  } else {
-    player.noWalk();
-  }
 }
 /////////////////////normalinput
 function handleInput(dt) {
