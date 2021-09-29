@@ -46,7 +46,7 @@ webSocketServer.on("connection", function (socket) {
     pressed = true;
     data = await data.toString("utf-8").trim();
     // console.log(typeof data);
-    // console.log("movement from esp32:", data);
+    if (data != "51") console.log("movement from esp32:", data);
     socket.send(data);
   });
   // socket.onmessage = function (message) {

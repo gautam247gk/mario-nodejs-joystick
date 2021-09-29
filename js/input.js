@@ -49,6 +49,10 @@
     pressedKeys = {};
   });
   /////////////////socket receive////////////////////////////
+  var lstatus = false,
+    rstatus = false,
+    ljstatus = false,
+    rjstatus = false;
   ws.onmessage = function (message) {
     //console.log("data received from server:", message);
     var j, h;
@@ -59,12 +63,14 @@
         code: "ArrowRight",
         keyCode: "39",
       });
+      rstatus = true;
       setKey(j, true);
-    } else if (message.data != "50") {
+    } else if (message.data == "51" && rstatus) {
       j = new KeyboardEvent("keyup", {
         code: "ArrowRight",
         keyCode: "39",
       });
+      rstatus = false;
       setKey(j, false);
     }
 
@@ -74,12 +80,14 @@
         code: "ArrowLeft",
         keyCode: "37",
       });
+      lstatus = true;
       setKey(j, true);
-    } else if (message.data != "48") {
+    } else if (message.data == "51" && lstatus) {
       j = new KeyboardEvent("keyup", {
         code: "ArrowLeft",
         keyCode: "37",
       });
+      lstatus = false;
       setKey(j, false);
     }
 
@@ -89,17 +97,19 @@
         code: "Arrowup",
         keyCode: "32",
       });
+      jstatus = true;
       setKey(j, true);
-    } else if (message.data != "49") {
+    } else if (message.data == "51" && jstatus) {
       j = new KeyboardEvent("keyup", {
         code: "Arrowup",
         keyCode: "32",
       });
+      jstatus = false;
       setKey(j, false);
     }
 
-    //jump left
-    if (message.data == "48") {
+    //left jump
+    if (message.data == "51") {
       j = new KeyboardEvent("keydown", {
         code: "ArrowLeft",
         keyCode: "37",
@@ -108,22 +118,24 @@
         code: "Arrowup",
         keyCode: "32",
       });
+      ljstatus = true;
       setKey(j, true);
       setKey(h, true);
-    } else if (message.data != "52") {
-      j = new KeyboardEvent("keydown", {
+    } else if (message.data == "52" && ljstatus) {
+      j = new KeyboardEvent("keyup", {
         code: "ArrowLeft",
         keyCode: "37",
       });
-      h = new KeyboardEvent("keydown", {
+      h = new KeyboardEvent("keyup", {
         code: "Arrowup",
         keyCode: "32",
       });
+      ljstatus = false;
       setKey(j, false);
       setKey(h, false);
     }
 
-    //jump right
+    //right jump
     if (message.data == "53") {
       j = new KeyboardEvent("keydown", {
         code: "ArrowRight",
@@ -133,17 +145,19 @@
         code: "Arrowup",
         keyCode: "32",
       });
+      rjstatus = true;
       setKey(j, true);
       setKey(h, true);
-    } else if (message.data != "53") {
+    } else if (message.data == "51" && rjstatus) {
       j = new KeyboardEvent("keyup", {
         code: "ArrowRight",
         keyCode: "39",
       });
-      h = new KeyboardEvent("keydown", {
+      h = new KeyboardEvent("keyup", {
         code: "Arrowup",
         keyCode: "32",
       });
+      rjstatus = false;
       setKey(j, false);
       setKey(h, false);
     }
